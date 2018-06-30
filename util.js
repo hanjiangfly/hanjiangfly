@@ -39,7 +39,7 @@ function _add_td(_key,_re_str) {
 
     return _re_str ;
 }
-function my_add_table(jq_select_id,a_ask, a_bid, b_ask, b_bid, c_ask, c_bid, xx_tip,yy_tip) {
+function my_add_table(jq_select_id,a_ask, a_bid, b_ask, b_bid, c_ask, c_bid, xx_tip,yy_tip, th_title) {
     let _t_table_body_add = "";
 
     // if (eth_tip < 0.001) {
@@ -73,23 +73,7 @@ function my_add_table(jq_select_id,a_ask, a_bid, b_ask, b_bid, c_ask, c_bid, xx_
 
 
     if (TABLE_INDEX % 10 === 0) {
-        _t += ` <tr>
-                <th colspan="4">ft/eth</th>
-                <th colspan="4">eth/usdt</th>
-                <th colspan="4">ft/usdt</th>
-                <th colspan="2">profit</th>
-                </tr>
-                <tr>
-                <th colspan="2">ask1</th>
-                <th colspan="2">bid1</th>
-                <th colspan="2">ask1</th>
-                <th colspan="2">bid1</th>
-                <th colspan="2">ask1</th>
-                <th colspan="2">bid1</th>
-                <th>eth_profit</th>
-                <th>usdt_profit</th>
-                </tr>
-                ` ;
+        _t += th_title ;
     }
 
 

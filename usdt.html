@@ -61,12 +61,29 @@ profit_usdt_2 = 1 * ethusdt_data.ethusdt_ask1[0] / fteth_data.fteth_ask1[0] * ft
         <th colspan="2">bid1</th>
         <th colspan="2">ask1</th>
         <th colspan="2">bid1</th>
-        <th>eth_profit</th>
-        <th>usdt_profit</th>
+        <th>@1_profit</th>
+        <th>@2_profit</th>
     </tr>
 </table>
 <script>
 
+    const table_title = ` <tr>
+                <th colspan="4">ft/eth</th>
+                <th colspan="4">eth/usdt</th>
+                <th colspan="4">ft/usdt</th>
+                <th colspan="2">profit</th>
+                </tr>
+                <tr>
+                <th colspan="2">ask1</th>
+                <th colspan="2">bid1</th>
+                <th colspan="2">ask1</th>
+                <th colspan="2">bid1</th>
+                <th colspan="2">ask1</th>
+                <th colspan="2">bid1</th>
+                <th>@1_profit</th>
+                <th>@2_profit</th>
+                </tr>
+                `;
     const ftusdt_url = "https://api.fcoin.com/v2/market/depth/L20/ftusdt";
     const ethusdt_url = "https://api.fcoin.com/v2/market/depth/L20/ethusdt";
     const fteth_url = "https://api.fcoin.com/v2/market/depth/L20/fteth";
@@ -136,7 +153,7 @@ profit_usdt_2 = 1 * ethusdt_data.ethusdt_ask1[0] / fteth_data.fteth_ask1[0] * ft
             ydata_usdt_1.push(profit_usdt_1);
             ydata_usdt_2.push(profit_usdt_2);
             console.log(new Date(result.ts), " usdt 1: ", profit_usdt_1, " usdt 2: ", profit_usdt_2);
-            my_add_table("#text",fteth_data.fteth_ask1, fteth_data.fteth_bid1, ftusdt_data.ftusdt_ask1, ftusdt_data.ftusdt_bid1, ethusdt_data.ethusdt_ask1, ethusdt_data.ethusdt_bid1, profit_usdt_1 ,profit_usdt_2 );
+            my_add_table("#text",fteth_data.fteth_ask1, fteth_data.fteth_bid1, ftusdt_data.ftusdt_ask1, ftusdt_data.ftusdt_bid1, ethusdt_data.ethusdt_ask1, ethusdt_data.ethusdt_bid1, profit_usdt_1 ,profit_usdt_2 ,table_title);
 
         }).catch((error) => {
             console.log(error)
