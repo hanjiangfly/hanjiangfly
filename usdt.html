@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>change usdt</title>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/echarts/4.1.0.rc2/echarts-en.js"></script>
+    <script src="util.js"></script>
+    <style type="text/css">
+        /* gridtable */
+        table.gridtable {
+            font-family: verdana, arial, sans-serif;
+            font-size: 11px;
+            color: #333333;
+            border-width: 1px;
+            border-color: #666666;
+            border-collapse: collapse;
+        }
+
+        table.gridtable th {
+            border-width: 1px;
+            padding: 8px;
+            border-style: solid;
+            border-color: #666666;
+            background-color: #dedede;
+        }
+
+        table.gridtable td {
+            border-width: 1px;
+            padding: 8px;
+            border-style: solid;
+            border-color: #666666;
+            background-color: #ffffff;
+        }
+
+        /* /gridtable */
+    </style>
+</head>
+<body>
+<h3>@1 1 usdt buy ftusdt ask1 , ft sell fteth bid1, eth sell ethusdt bid1</h3>
+profit_usdt_1 = 1 * ftusdt_data.ftusdt_ask1[0] / fteth_data.fteth_bid1[0] / ethusdt_data.ethusdt_bid1[0] - 1 ;
+<hr>
+<h3>@2 1 usdt buy ethusdt ask1 , eth buy fteth ask1 , ft sell ftusdt bid1</h3>
+profit_usdt_2 = 1 * ethusdt_data.ethusdt_ask1[0] / fteth_data.fteth_ask1[0] * ftusdt_data.ftusdt_bid1[0] - 1;
+<hr>
+<div id="main" style="width: 1400px;height:400px;"></div>
+<br>
+<!--<div id="text"></div>-->
+<table class="gridtable" id="text">
+    <tr>
+        <!-- th为表格标题栏-->
+        <th colspan="4">ft/eth</th>
+        <th colspan="4">eth/usdt</th>
+        <th colspan="4">ft/usdt</th>
+        <th colspan="2">profit</th>
+    </tr>
+    <tr>
+        <th colspan="2">ask1</th>
+        <th colspan="2">bid1</th>
+        <th colspan="2">ask1</th>
+        <th colspan="2">bid1</th>
+        <th colspan="2">ask1</th>
+        <th colspan="2">bid1</th>
+        <th>eth_profit</th>
+        <th>usdt_profit</th>
+    </tr>
+</table>
+<script>
+
+    const ftusdt_url = "https://api.fcoin.com/v2/market/depth/L20/ftusdt";
+    const ethusdt_url = "https://api.fcoin.com/v2/market/depth/L20/ethusdt";
+    const fteth_url = "https://api.fcoin.com/v2/market/depth/L20/fteth";
+
+    //    let _return_ = {} ;
+    function get_new_data() {
+        let ftusdt_req = new Promise(function (resolve, reject) {
+            $.ajax({
+                type: "get",
+                url: ftusdt_url,
+                success: function (data) {
+                    let jdata = JSON.parse(data);
+                    resolve({
+                        "ftusdt_ask1": getMin(jdata.data.asks),
+                        "ftusdt_bid1": getMax(jdata.data.bids),
+                        "ts": jdata.data.ts
+                    })//在异步操作成功时调用
+                }
+            });
+        });
+
+        let ethusdt_req = new Promise(function (resolve, reject) {
+            $.ajax({
+                type: "get",
+                url: ethusdt_url,
+                success: function (data) {
+                    let jdata = JSON.parse(data);
+                    resolve({
+                        "ethusdt_ask1": getMin(jdata.data.asks),
+                        "ethusdt_bid1": getMax(jdata.data.bids),
+                        "ts": jdata.ts
+                    })//在异步操作成功时调用
+
+                }
+            });
+        });
+
+        let fteth_req = new Promise(function (resolve, reject) {
+            $.ajax({
+                type: "get",
+                url: fteth_url,
+                success: function (data) {
+                    let jdata = JSON.parse(data);
+                    resolve({
+                        "fteth_ask1": getMin(jdata.data.asks),
+                        "fteth_bid1": getMax(jdata.data.bids),
+                        "ts": jdata.ts
+                    })//在异步操作成功时调用
+                }
+            });
+        });
+
+        //Promise的all方法，等数组中的所有promise对象都完成执行
+        let plist = [ftusdt_req, ethusdt_req, fteth_req];
+
+        Promise.all(plist).then((result) => {
+            let ftusdt_data = result[0];
+            let ethusdt_data = result[1];
+            let fteth_data = result[2];
+            console.log(ftusdt_data.ftusdt_bid1, ethusdt_data.ethusdt_bid1, fteth_data.fteth_bid1);        //['成功了', 'success']
+
+            xdata.push(new Date(ftusdt_data.ts));
+
+            let profit_usdt_1 = 1 * ftusdt_data.ftusdt_ask1[0] / fteth_data.fteth_bid1[0] / ethusdt_data.ethusdt_bid1[0] - 1 ;
+            let profit_usdt_2 = 1 * ethusdt_data.ethusdt_ask1[0] * fteth_data.fteth_ask1[0] / ftusdt_data.ftusdt_bid1[0] - 1;
+
+            ydata_usdt_1.push(profit_usdt_1);
+            ydata_usdt_2.push(profit_usdt_2);
+            console.log(new Date(result.ts), " usdt 1: ", profit_usdt_1, " usdt 2: ", profit_usdt_2);
+            my_add_table("#text",fteth_data.fteth_ask1, fteth_data.fteth_bid1, ftusdt_data.ftusdt_ask1, ftusdt_data.ftusdt_bid1, ethusdt_data.ethusdt_ask1, ethusdt_data.ethusdt_bid1, profit_usdt_1 ,profit_usdt_2 );
+
+        }).catch((error) => {
+            console.log(error)
+        }).then(data => {
+            myChart.setOption({
+                xAxis: {
+                    data: xdata
+                },
+                series: [{
+                    name: '@1 usdt',
+                    data: ydata_usdt_1,
+
+                }, {
+                    name: '@2 usdt',
+                    data: ydata_usdt_2
+                }
+                ]
+            });
+        });
+    }
+
+
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main'));
+
+    // 指定图表的配置项和数据
+    var option = {
+        legend: {
+            data: ['@1 usdt', '@2 usdt']
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: []
+        },
+        yAxis: {
+            boundaryGap: [0, '50%'],
+            type: 'value',
+            scale: true
+        },
+        series: [
+            {
+                name: '@1 usdt',
+                type: 'line',
+                data: []
+            }, {
+                name: '@2 usdt',
+                type: 'line',
+                data: []
+            },
+        ]
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+    xdata = [];
+    ydata_usdt_1 = [];
+    ydata_usdt_2 = [];
+    ydata_ft = [];
+    ydata_eth = [];
+    setInterval(function () {
+        get_new_data();
+    }, 1000);
+</script>
+</body>
+</html>
