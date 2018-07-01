@@ -50,8 +50,8 @@ profit_usdt_2 = 1 * ethusdt_data.ethusdt_ask1[0] * fteth_data.fteth_ask1[0] / ft
     <tr>
         <!-- th为表格标题栏-->
         <th colspan="4">ft/eth</th>
-        <th colspan="4">eth/usdt</th>
         <th colspan="4">ft/usdt</th>
+        <th colspan="4">eth/usdt</th>
         <th colspan="2">profit</th>
     </tr>
     <tr>
@@ -154,7 +154,8 @@ profit_usdt_2 = 1 * ethusdt_data.ethusdt_ask1[0] * fteth_data.fteth_ask1[0] / ft
             ydata_usdt_2.push(profit_usdt_2);
             console.log(new Date(result.ts), " usdt 1: ", profit_usdt_1, " usdt 2: ", profit_usdt_2);
             my_add_table("#text",fteth_data.fteth_ask1, fteth_data.fteth_bid1, ftusdt_data.ftusdt_ask1, ftusdt_data.ftusdt_bid1, ethusdt_data.ethusdt_ask1, ethusdt_data.ethusdt_bid1, profit_usdt_1 ,profit_usdt_2 ,table_title);
-
+            let profit_usdt_3 = 1 * ftusdt_data.ftusdt_ask1[0] / ethusdt_data.ethusdt_bid1[0]/ fteth_data.fteth_bid1[0]  - 1 ;
+            console.log("高原：",profit_usdt_3," 我的：",profit_usdt_1) ;
         }).catch((error) => {
             console.log(error)
         }).then(data => {
