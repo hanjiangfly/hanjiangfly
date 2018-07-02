@@ -45,6 +45,12 @@ profit_usdt_2 = 1 * ethusdt_data.ethusdt_ask1[0] * fteth_data.fteth_ask1[0] / ft
 <hr>
 <div id="main" style="width: 1400px;height:400px;"></div>
 <br>
+<label>余额：</label><input type="number" value="400.00" id="yue">USDT
+<br>
+<label>A:</label><input type="number" value="0.8" id="a"><br>
+<label>B:</label><input type="number" value="0.8" id="b"><br>
+<label>C:</label><input type="number" value="0.8" id="c"><br>
+<hr>
 <!--<div id="text"></div>-->
 <table class="gridtable" id="text">
     <tr>
@@ -69,8 +75,8 @@ profit_usdt_2 = 1 * ethusdt_data.ethusdt_ask1[0] * fteth_data.fteth_ask1[0] / ft
 
     const table_title = ` <tr>
                 <th colspan="4">ft/eth</th>
-                <th colspan="4">eth/usdt</th>
                 <th colspan="4">ft/usdt</th>
+                <th colspan="4">eth/usdt</th>
                 <th colspan="2">profit</th>
                 </tr>
                 <tr>
@@ -88,7 +94,19 @@ profit_usdt_2 = 1 * ethusdt_data.ethusdt_ask1[0] * fteth_data.fteth_ask1[0] / ft
     const ethusdt_url = "https://api.fcoin.com/v2/market/depth/L20/ethusdt";
     const fteth_url = "https://api.fcoin.com/v2/market/depth/L20/fteth";
 
+    var _A = document.getElementById("a").valueOf().value;
+    var _B = document.getElementById("b").valueOf().value;
+    var _C = document.getElementById("c").valueOf().value;
+    var _YUE = document.getElementById("yue").valueOf().value;
+
     //    let _return_ = {} ;
+
+    function get_trade_test(ftusdt_ask1_a, fteth_bid1_b, ethusdt_bid1_c) {
+        // let profit_usdt_1 = 1 * ftusdt_data.ftusdt_ask1[0] / fteth_data.fteth_bid1[0] / ethusdt_data.ethusdt_bid1[0] - 1;
+        let ft_ask_a = ftusdt_ask1_a[0] * ftusdt_ask1_a[1] * _A ;
+
+    }
+
     function get_new_data() {
         let ftusdt_req = new Promise(function (resolve, reject) {
             $.ajax({
@@ -147,15 +165,15 @@ profit_usdt_2 = 1 * ethusdt_data.ethusdt_ask1[0] * fteth_data.fteth_ask1[0] / ft
 
             xdata.push(new Date(ftusdt_data.ts));
 
-            let profit_usdt_1 = 1 * ftusdt_data.ftusdt_ask1[0] / fteth_data.fteth_bid1[0] / ethusdt_data.ethusdt_bid1[0] - 1 ;
+            let profit_usdt_1 = 1 * ftusdt_data.ftusdt_ask1[0] / fteth_data.fteth_bid1[0] / ethusdt_data.ethusdt_bid1[0] - 1;
             let profit_usdt_2 = 1 * ethusdt_data.ethusdt_ask1[0] * fteth_data.fteth_ask1[0] / ftusdt_data.ftusdt_bid1[0] - 1;
 
             ydata_usdt_1.push(profit_usdt_1);
             ydata_usdt_2.push(profit_usdt_2);
             console.log(new Date(result.ts), " usdt 1: ", profit_usdt_1, " usdt 2: ", profit_usdt_2);
-            my_add_table("#text",fteth_data.fteth_ask1, fteth_data.fteth_bid1, ftusdt_data.ftusdt_ask1, ftusdt_data.ftusdt_bid1, ethusdt_data.ethusdt_ask1, ethusdt_data.ethusdt_bid1, profit_usdt_1 ,profit_usdt_2 ,table_title);
-            let profit_usdt_3 = 1 * ftusdt_data.ftusdt_ask1[0] / ethusdt_data.ethusdt_bid1[0]/ fteth_data.fteth_bid1[0]  - 1 ;
-            console.log("高原：",profit_usdt_3," 我的：",profit_usdt_1) ;
+            my_add_table("#text", fteth_data.fteth_ask1, fteth_data.fteth_bid1, ftusdt_data.ftusdt_ask1, ftusdt_data.ftusdt_bid1, ethusdt_data.ethusdt_ask1, ethusdt_data.ethusdt_bid1, profit_usdt_1, profit_usdt_2, table_title);
+            let profit_usdt_3 = 1 * ftusdt_data.ftusdt_ask1[0] / ethusdt_data.ethusdt_bid1[0] / fteth_data.fteth_bid1[0] - 1;
+            console.log("高原：", profit_usdt_3, " 我的：", profit_usdt_1);
         }).catch((error) => {
             console.log(error)
         }).then(data => {
@@ -171,7 +189,7 @@ profit_usdt_2 = 1 * ethusdt_data.ethusdt_ask1[0] * fteth_data.fteth_ask1[0] / ft
                     name: '@2 usdt',
                     data: ydata_usdt_2
                 }
-                ]
+                ],
             });
         });
     }
